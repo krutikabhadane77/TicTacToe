@@ -4,7 +4,7 @@ public class TicTacToe {
     public static final int HEAD = 0;
     public static final int TAIL = 1;
 
-
+    // created the board of given size
     public static char[] createBoard() {
         char[] board = new char[10];
         for (int position = 1; position < 10; position++) {
@@ -14,8 +14,14 @@ public class TicTacToe {
     }
 
     // get input from the user
-    public static char getInput(char givenInput) {
-        return Character.toUpperCase(givenInput);
+    public static char getInput(Scanner givenInput) {
+        System.out.println("choose X or O");
+        String letter = givenInput.next();
+        while (!letter.equalsIgnoreCase("x") && !letter.equalsIgnoreCase("o")) {
+            System.out.println("please enter correct letter : x or o");
+            letter = givenInput.next();
+        }
+        return letter.toUpperCase().charAt(0);
     }
 
     // display the board
@@ -32,20 +38,21 @@ public class TicTacToe {
         return board[index] == ' ';
     }
 
-
-    public static int getUserMove(char[] board, Scanner getInput) {
-        while (true) {
-            System.out.println("Enter the index you want to move");
-            int index = getInput.nextInt();
-            if ((index > 0 && index < 10) && isBoardEmpty(board, index)) {
-                return index;
-            } else if ((index <= 0 && index >= 10)) {
-                System.out.println("Invalid Index Try Again!!!");
-            } else {
-                System.out.println("Already Occupied");
-            }
+    public static char[] userInputMove(char[] board, Scanner userInput, char playerLetter) {
+        System.out.println("Enter the index from 1-9 to make a move");
+        int position = userInput.nextInt();
+        while (position >= 10 || position <= 0) {
+            System.out.println("enter correct position between 1 and 9");
+            position = userInput.nextInt();
         }
+        while (!isBoardEmpty(board, position)) {
+            System.out.println("the position is already occupied");
+            position = userInput.nextInt();
+        }
+        board[position] = playerLetter;
+        return board;
     }
+
 
 
     public static void makeMove(char[] board, int userInput, char letterInput) {
@@ -78,7 +85,7 @@ public class TicTacToe {
                 || (board[3] == c && board[6] == c && board[9] == c));
     }
 
-    // check tie case
+
     public static boolean checkTie(char[] board) {
         for (int position = 0; position < 10; position++) {
             if (board[position] == ' ') {
@@ -86,34 +93,6 @@ public class TicTacToe {
             }
         }
         return true;
-    }
-
-
-    public static boolean computerTurn(char[] board, char computerInput, char playerInput) {
-        // winning index for the player
-        int winningIndex = winningPosition(board, playerInput);
-        for (int position = 1; position < 10; position++) {
-            if (isBoardEmpty(board, position)) {
-                board[position] = computerInput;
-                if (isWinner(board, computerInput))
-                    return true;
-                else
-                    board[position] = ' ';
-            }
-        }
-
-        int blockPosition = denyWinOpponent(board, playerInput);
-        if (denyWinOpponent(board, playerInput) > 0 && denyWinOpponent(board, playerInput) < 10) {
-            board[blockPosition] = computerInput;
-        } else {
-            int position = (int) (Math.random() * 9) + 1;
-            while (!isBoardEmpty(board, position)) {
-                position = (int) (Math.random() * 9) + 1;
-            }
-            board[position] = computerInput;
-        }
-        showBoard(board);
-        return false;
     }
 
 
@@ -132,21 +111,31 @@ public class TicTacToe {
     }
 
 
-    public static int denyWinOpponent(char[] board, char playerInput) {
-        for (int position = 1; position < 10; position++) {
-            if (board[position] == ' ') {
-                board[position] = playerInput;
-                if (!isWinner(board, playerInput)) {
-                    board[position] = ' ';
-                } else {
-                    {
-                        board[position] = playerInput;
-                        return position;
-                    }
-                }
-            }
+    public static boolean computerPlay(char[] board, char computerLetter, char playerLetter) {
+        int index = 0;
+        index = winningPosition(board, computerLetter);
+        if (index != 0) {
+            board[index] = computerLetter;
+            return true;
         }
-        return 0;
+        int blockIndex = denyWinOpponent(board, playerLetter);
+        if (blockIndex != 0) {
+            board[blockIndex] = computerLetter;
+            return false;
+        }
+        index = chooseCornerPosition(board);
+        if (index == 0) {
+            index = centerOrSides(board);
+        }
+        board[index] = computerLetter;
+        return false;
+    }
+
+
+    public static int denyWinOpponent(char[] board, char playerInput) {
+        int index = 0;
+        index = winningPosition(board, playerInput);
+        return index;
     }
 
 
@@ -171,31 +160,44 @@ public class TicTacToe {
 
     }
 
+
+    public static void playGameUntillItEnd(char[] board, char playerLetter, char computerLetter, Scanner userInput,
+                                           String firstPlayer) {
+        int toss = firstPlayer.equalsIgnoreCase("computer") ? 1 : 0;
+        while (!checkTie(board)) {
+            if (toss == 0) {
+                board = userInputMove(board, userInput, playerLetter);
+                showBoard(board);
+                if (isWinner(board, playerLetter)) {
+                    System.out.println("player is the winner");
+                    return;
+                }
+                toss = 1;
+            } else {
+                System.out.println("changing turn");
+                if (computerPlay(board, computerLetter, playerLetter)) {
+                    showBoard(board);
+                    System.out.println("computer is the winner");
+                    return;
+                }
+                toss = 0;
+            }
+            showBoard(board);
+        }
+        System.out.println("its a tie");
+    }
+
     public static void main(String[] args) {
         System.out.println("Welcome to the Tic Tac Toe Game Program");
-        Scanner userInput = new Scanner(System.in);
         char[] board = createBoard();
+        Scanner userInput = new Scanner(System.in);
+        char playerInput = getInput(userInput);
+        System.out.println("Player 1 choose : " + playerInput);
+        char computerInput = (playerInput == 'X')?'O':'X';
         String playStarter = tossWhoStartsFirst();
         System.out.println("Choose X or O");
-        char playerInput = userInput.next().charAt(0);
-        char computerInput = getInput((playerInput) == 'X' ? 'O' : 'X');
         showBoard(board);
-        int userMove = getUserMove(board, userInput);
-        makeMove(board, userMove, playerInput);
-        if (isWinner(board, playerInput)) {
-            System.out.println("player is the winner");
-            return;
-        }
-        if (computerTurn(board, computerInput, playerInput)) {
-            System.out.println("computer is the winner");
-            return;
-        }
-        if (checkTie(board) == true) {
-            System.out.println("It's a Tie");
-        } else {
-            System.out.println("Change the Turn");
-        }
-        chooseCornerPosition(board);
-        centerOrSides(board);
+        playGameUntillItEnd(board, playerInput, computerInput, userInput, playStarter);
+
     }
 }
