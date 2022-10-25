@@ -116,6 +116,7 @@ public class TicTacToe {
         return false;
     }
 
+
     public static int winningPosition(char[] board, char letter) {
         for (int position = 1; position < 10; position++) {
             if (isBoardEmpty(board, position)) {
@@ -130,7 +131,7 @@ public class TicTacToe {
         return 0;
     }
 
-    // UC9 opponent blocked
+
     public static int denyWinOpponent(char[] board, char playerInput) {
         for (int position = 1; position < 10; position++) {
             if (board[position] == ' ') {
@@ -158,6 +159,18 @@ public class TicTacToe {
         return 0;
     }
 
+
+    public static int centerOrSides(char[] board) {
+        if (isBoardEmpty(board, 5)) // center index
+            return 5;
+        int[] sides = { 2, 4, 6, 8 }; // side indexes
+        for (int index = 0; index <= 3; index++)
+            if (isBoardEmpty(board, sides[index])) // checking board enpty or not
+                return index;
+        return 0;
+
+    }
+
     public static void main(String[] args) {
         System.out.println("Welcome to the Tic Tac Toe Game Program");
         Scanner userInput = new Scanner(System.in);
@@ -166,34 +179,23 @@ public class TicTacToe {
         System.out.println("Choose X or O");
         char playerInput = userInput.next().charAt(0);
         char computerInput = getInput((playerInput) == 'X' ? 'O' : 'X');
-       showBoard(board);
-        char player;
-        if (playStarter == "player")
-            player = playerInput;
-        else {
-            player = computerInput;
-        }
-
+        showBoard(board);
         int userMove = getUserMove(board, userInput);
         makeMove(board, userMove, playerInput);
-
         if (isWinner(board, playerInput)) {
             System.out.println("player is the winner");
             return;
         }
-
         if (computerTurn(board, computerInput, playerInput)) {
             System.out.println("computer is the winner");
             return;
         }
-
         if (checkTie(board) == true) {
             System.out.println("It's a Tie");
         } else {
             System.out.println("Change the Turn");
         }
+        chooseCornerPosition(board);
+        centerOrSides(board);
     }
 }
-
-
-
