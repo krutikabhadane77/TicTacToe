@@ -19,7 +19,7 @@ public class TicTacToe {
     }
 
     // display the board
-    public static void showBoard(char[] board){
+    public static void showBoard(char[] board) {
         System.out.println(board[1] + " | " + board[2] + " |" + " " + board[3]);
         System.out.println("---------");
         System.out.println(board[4] + " | " + board[5] + " |" + " " + board[6]);
@@ -56,6 +56,7 @@ public class TicTacToe {
 
 
     private static String tossWhoStartsFirst() {
+        System.out.println("Toss the coin");
         int tossResult = (int) (Math.floor(Math.random() * 10)) % 2;
         if (tossResult == HEAD) {
             System.out.println("player will start");
@@ -89,6 +90,8 @@ public class TicTacToe {
 
 
     public static boolean computerTurn(char[] board, char computerInput, char playerInput) {
+        // winning index for the player
+        int winningIndex = winningPosition(board, playerInput);
         for (int position = 1; position < 10; position++) {
             if (isBoardEmpty(board, position)) {
                 board[position] = computerInput;
@@ -98,7 +101,6 @@ public class TicTacToe {
                     board[position] = ' ';
             }
         }
-        // index where block is made to prevent win
 
         int blockPosition = denyWinOpponent(board, playerInput);
         if (denyWinOpponent(board, playerInput) > 0 && denyWinOpponent(board, playerInput) < 10) {
@@ -110,8 +112,22 @@ public class TicTacToe {
             }
             board[position] = computerInput;
         }
-       showBoard(board);
+        showBoard(board);
         return false;
+    }
+
+    public static int winningPosition(char[] board, char letter) {
+        for (int position = 1; position < 10; position++) {
+            if (isBoardEmpty(board, position)) {
+                board[position] = letter;
+                if (isWinner(board, letter)) {
+                    board[position] = ' ';
+                    return position;
+                }
+                board[position] = ' ';
+            }
+        }
+        return 0;
     }
 
     // UC9 opponent blocked
@@ -132,14 +148,25 @@ public class TicTacToe {
         return 0;
     }
 
+
+    public static int chooseCornerPosition(char[] board) {
+        int[] boardCorners = { 1, 3, 7, 9 };
+        for (int position = 0; position < boardCorners.length; position++) {
+            if (isBoardEmpty(board, boardCorners[position]))
+                return position;
+        }
+        return 0;
+    }
+
     public static void main(String[] args) {
         System.out.println("Welcome to the Tic Tac Toe Game Program");
         Scanner userInput = new Scanner(System.in);
         char[] board = createBoard();
+        String playStarter = tossWhoStartsFirst();
+        System.out.println("Choose X or O");
         char playerInput = userInput.next().charAt(0);
         char computerInput = getInput((playerInput) == 'X' ? 'O' : 'X');
-        showBoard(board);
-        String playStarter = tossWhoStartsFirst();
+       showBoard(board);
         char player;
         if (playStarter == "player")
             player = playerInput;
@@ -149,12 +176,12 @@ public class TicTacToe {
 
         int userMove = getUserMove(board, userInput);
         makeMove(board, userMove, playerInput);
-        // checked if the player won
+
         if (isWinner(board, playerInput)) {
             System.out.println("player is the winner");
             return;
         }
-        // computer's turn to move
+
         if (computerTurn(board, computerInput, playerInput)) {
             System.out.println("computer is the winner");
             return;
@@ -165,23 +192,8 @@ public class TicTacToe {
         } else {
             System.out.println("Change the Turn");
         }
-        int x = denyWinOpponent(board, playerInput);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
