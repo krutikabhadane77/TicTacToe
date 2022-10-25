@@ -51,6 +51,15 @@ public class TicTacToe {
         if (isBoardEmpty(board, index)) {
             board[index] = letterInput;
         }
+    }public static boolean isWinner(char[] board, char c) {
+        return ((board[1] == c && board[2] == c && board[3] == c)
+                || (board[4] == c && board[5] == c && board[6] == c)
+                || (board[7] == c && board[8] == c && board[9] == c)
+                || (board[1] == c && board[5] == c && board[9] == c)
+                || (board[3] == c && board[5] == c && board[7] == c)
+                || (board[1] == c && board[4] == c && board[7] == c)
+                || (board[2] == c && board[5] == c && board[8] == c)
+                || (board[3] == c && board[6] == c && board[9] == c));
     }
     private static Player tossWhoStartsFirst() {
         int tossResult = (int) (Math.floor(Math.random() * 10)) % 2;
@@ -74,5 +83,26 @@ public class TicTacToe {
         makeMove(board, userMove, getLetterInput);
        showBoard(board);
         Player player = tossWhoStartsFirst();
+        isWinner(board, getLetterInput);
 }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
