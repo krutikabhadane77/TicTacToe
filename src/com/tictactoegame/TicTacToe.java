@@ -9,33 +9,41 @@ public class TicTacToe {
         return board;
     }
 
-    public static char chooseLetter(Scanner input) {
-        System.out.println("Choose your letter 'X' or 'O'");
-        char givenInput = input.next().charAt(0);
-        if (givenInput == 'X' || givenInput == 'x')
-        {
-            return givenInput;
-        }
-        else if (givenInput == 'O' || givenInput == 'o')
-        {
-            return givenInput;
-        }
-        return givenInput;
+    public static char chooseLetter(char givenInput) {
+       return Character.toUpperCase(givenInput);
     }
 
     public static void showBoard(char[] board) {
-        System.out.println(board[1]+" | "+board[2]+" |"+" "+board[3]);
+        System.out.println(board[1] + " | " + board[2] + " |" + " " + board[3]);
         System.out.println("---------");
-        System.out.println(board[4]+" | "+board[5]+" |"+" "+board[6]);
+        System.out.println(board[4] + " | " + board[5] + " |" + " " + board[6]);
         System.out.println("---------");
-        System.out.println(board[7]+" | "+board[8]+" |"+" "+board[9]);
+        System.out.println(board[7] + " | " + board[8] + " |" + " " + board[9]);
+    }
+
+    public static boolean checkPosition(char[] board, Scanner input) {
+        System.out.println("Enter the user input ");
+        int userInput = input.nextInt();
+        boolean flag = true;
+        while (flag) {
+            if (board[userInput] == ' ') {
+                return flag;
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) {
         System.out.println("Welcome to the Tic Tac Toe Game Program");
         Scanner input = new Scanner(System.in);
+        char givenInput = input.next().charAt(0);
         char[] board = createBoard();
-        char chooseValue = chooseLetter(input);
+        char ch = chooseLetter((chooseLetter(givenInput) == 'X' ? 'O' : 'X'));
         showBoard(board);
+        boolean isEmpty = checkPosition(board, input);
+        if (isEmpty) {
+            showBoard(board);
+        }
     }
 }
+
