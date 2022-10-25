@@ -1,6 +1,13 @@
 package com.tictactoegame;
 import java.util.Scanner;
 public class TicTacToe {
+    public static final int HEAD = 0;
+    public static final int TAIL = 1;
+
+    public static enum Player {
+        player1, player2
+    };
+
     public static char[] createBoard() {
         char[] board = new char[10];
         for (int position = 1; position < 10; position++) {
@@ -45,7 +52,16 @@ public class TicTacToe {
             board[index] = letterInput;
         }
     }
-
+    private static Player tossWhoStartsFirst() {
+        int tossResult = (int) (Math.floor(Math.random() * 10)) % 2;
+        if (tossResult == HEAD) {
+            System.out.println("player will start");
+            return Player.player1;
+        } else {
+            System.out.println("computer will start");
+            return Player.player2;
+        }
+    }
     public static void main(String[] args) {
         System.out.println("Welcome to the Tic Tac Toe Game Program");
         Scanner userInput = new Scanner(System.in);
@@ -57,5 +73,6 @@ public class TicTacToe {
         showBoard(board);
         makeMove(board, userMove, getLetterInput);
        showBoard(board);
-    }
+        Player player = tossWhoStartsFirst();
+}
 }
