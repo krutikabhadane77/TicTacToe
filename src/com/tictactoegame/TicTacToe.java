@@ -9,7 +9,7 @@ public class TicTacToe {
         return board;
     }
 
-    public static char chooseLetter(char givenInput) {
+    public static char getInput(char givenInput) {
        return Character.toUpperCase(givenInput);
     }
 
@@ -38,7 +38,7 @@ public class TicTacToe {
         Scanner input = new Scanner(System.in);
         char givenInput = input.next().charAt(0);
         char[] board = createBoard();
-        char ch = chooseLetter((chooseLetter(givenInput) == 'X' ? 'O' : 'X'));
+        char ch = getInput((getInput(givenInput) == 'X' ? 'O' : 'X'));
         showBoard(board);
         boolean isEmpty = checkPosition(board, input);
         if (isEmpty) {
