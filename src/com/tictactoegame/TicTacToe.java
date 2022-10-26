@@ -9,7 +9,7 @@ public class TicTacToe {
         return board;
     }
 
-    public static char chooseLetter(Scanner input) {
+    public static char getInput(Scanner input) {
         System.out.println("Choose your letter 'X' or 'O'");
         char givenInput = input.next().charAt(0);
         if (givenInput == 'X' || givenInput == 'x')
@@ -35,7 +35,7 @@ public class TicTacToe {
         System.out.println("Welcome to the Tic Tac Toe Game Program");
         Scanner input = new Scanner(System.in);
         char[] board = createBoard();
-        char chooseValue = chooseLetter(input);
+        char chooseValue = getInput(input);
         showBoard(board);
     }
 }
